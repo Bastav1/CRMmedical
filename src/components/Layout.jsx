@@ -5,6 +5,7 @@ import { useAuth } from '../lib/auth'
 import { useCollection } from '../lib/hooks'
 import { productStock } from '../lib/stock'
 import { daysUntil, fmtDate } from '../lib/format'
+import GlobalSearch from './GlobalSearch'
 
 export default function Layout({ children }) {
   const [open, setOpen] = useState(true)
@@ -219,10 +220,7 @@ export default function Layout({ children }) {
             <div className="text-[11px] text-slate-400">{company?.name}</div>
           </div>
           <div className="flex-1" />
-          <div className="relative hidden sm:block">
-            <input className="input pl-9 w-56 lg:w-72" placeholder="Search…" />
-            <svg className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-          </div>
+          <GlobalSearch />
           <div className="relative">
             <button
               className="w-9 h-9 grid place-items-center rounded-lg text-slate-500 hover:bg-slate-100 transition relative animate-duration-300"
