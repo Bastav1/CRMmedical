@@ -56,6 +56,19 @@ export function LineChart({ data, height = 240, color = PALETTE[0], area = true,
   const gid = 'ln' + color.replace('#', '')
   return (
     <div className="relative">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes chartDraw {
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes fadeInArea {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scalePoint {
+          from { transform: scale(0); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+      ` }} />
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height }} onMouseLeave={() => setHover(null)}>
         <defs>
           <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
@@ -69,14 +82,49 @@ export function LineChart({ data, height = 240, color = PALETTE[0], area = true,
             <text x={pad.l - 8} y={pad.t + ih * g + 4} textAnchor="end" fontSize="10.5" fill="#94a3b8">{valueFmt(max * (1 - g))}</text>
           </g>
         ))}
-        {area && <path d={areaPath} fill={`url(#${gid})`} />}
-        <path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+        {area && (
+          <path
+            d={areaPath}
+            fill={`url(#${gid})`}
+            style={{
+              animation: 'fadeInArea 1.2s ease-in-out forwards',
+              opacity: 0,
+              animationDelay: '0.4s'
+            }}
+          />
+        )}
+        <path
+          d={line}
+          fill="none"
+          stroke={color}
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          style={{
+            strokeDasharray: 3000,
+            strokeDashoffset: 3000,
+            animation: 'chartDraw 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards'
+          }}
+        />
         {pts.map((p, i) => (
           <g key={i}>
             {(data.length <= 16 || i % Math.ceil(data.length / 8) === 0) &&
               <text x={p.x} y={H - 10} textAnchor="middle" fontSize="10.5" fill="#94a3b8">{p.d.label}</text>}
             {hover === i && <line x1={p.x} x2={p.x} y1={pad.t} y2={pad.t + ih} stroke={color} strokeWidth="1" strokeOpacity="0.3" />}
-            <circle cx={p.x} cy={p.y} r={hover === i ? 5 : 3} fill="#fff" stroke={color} strokeWidth="2.5" />
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r={hover === i ? 5 : 3}
+              fill="#fff"
+              stroke={color}
+              strokeWidth="2.5"
+              style={{
+                transformOrigin: `${p.x}px ${p.y}px`,
+                animation: 'scalePoint 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                animationDelay: `${0.3 + i * 0.04}s`,
+                opacity: 0
+              }}
+            />
             <rect x={p.x - iw / data.length / 2} y={pad.t} width={iw / data.length} height={ih} fill="transparent" onMouseEnter={() => setHover(i)} />
           </g>
         ))}

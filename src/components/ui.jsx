@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Sparkline } from './charts'
 
 export function PageHeader({ title, subtitle, actions }) {
@@ -139,4 +139,24 @@ export function ModuleStub({ title, subtitle, features = [], note }) {
       </div>
     </div>
   )
+}
+
+export function CountUp({ end, duration = 1200, formatter = (v) => v }) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    let startTimestamp = null
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1)
+      setCount(progress * end)
+      if (progress < 1) {
+        window.requestAnimationFrame(step)
+      }
+    }
+    window.requestAnimationFrame(step)
+  }, [end, duration])
+
+  const displayVal = Number.isInteger(end) ? Math.round(count) : count
+  return <>{formatter(displayVal)}</>
 }

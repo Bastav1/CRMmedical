@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useCollection } from '../lib/hooks'
 import { productStock } from '../lib/stock'
-import { PageHeader, Stat, Badge } from '../components/ui'
+import { PageHeader, Stat, Badge, CountUp } from '../components/ui'
 import { LineChart, BarChart, DonutChart, ChartCard, PALETTE } from '../components/charts'
 import { inr, num, fmtDate, daysUntil, today } from '../lib/format'
 
@@ -66,10 +66,10 @@ export default function Dashboard() {
 
       {/* KPI cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Stat label="Total Products" value={num(products.length)} sub={`${products.filter((p) => p.group === 'Medicine').length} medicines`} icon="💊" tone="brand" />
-        <Stat label="Stock Value" value={inr(d.stockValue)} sub={`${num(d.totalStock)} units`} icon="📦" tone="green" />
-        <Stat label="Today's Sales" value={inr(d.todaysSales)} trend={d.momTrend} sub="vs last month" icon="🧾" tone="brand" spark={d.spark14} />
-        <Stat label="Low Stock Alerts" value={num(d.lowStock.length)} sub={`${d.expiringSoon.length} batches expiring ≤90d`} icon="⚠️" tone="amber" />
+        <Stat label="Total Products" value={<CountUp end={products.length} formatter={num} />} sub={`${products.filter((p) => p.group === 'Medicine').length} medicines`} icon="💊" tone="brand" />
+        <Stat label="Stock Value" value={<CountUp end={d.stockValue} formatter={inr} />} sub={`${num(d.totalStock)} units`} icon="📦" tone="green" />
+        <Stat label="Today's Sales" value={<CountUp end={d.todaysSales} formatter={inr} />} trend={d.momTrend} sub="vs last month" icon="🧾" tone="brand" spark={d.spark14} />
+        <Stat label="Low Stock Alerts" value={<CountUp end={d.lowStock.length} formatter={num} />} sub={`${d.expiringSoon.length} batches expiring ≤90d`} icon="⚠️" tone="amber" />
       </div>
 
       {/* Charts row 1 */}

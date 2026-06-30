@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCollection } from '../lib/hooks'
 import { productStock, fefoBatches } from '../lib/stock'
-import { PageHeader, Toolbar, Badge, Empty, Stat } from '../components/ui'
+import { PageHeader, Toolbar, Badge, Empty, Stat, CountUp } from '../components/ui'
 import { inr, num, fmtDate, daysUntil, exportCSV } from '../lib/format'
 
 export default function Stock() {
@@ -39,9 +39,9 @@ export default function Stock() {
       </>} />
 
       <div className="grid sm:grid-cols-3 gap-4 mb-4">
-        <Stat label="SKUs" value={num(data.length)} icon="💊" />
-        <Stat label="Total Units" value={num(data.reduce((s, p) => s + p.stock, 0))} icon="📦" tone="green" />
-        <Stat label="Stock Value (cost)" value={inr(totalValue)} icon="💰" tone="brand" />
+        <Stat label="SKUs" value={<CountUp end={data.length} formatter={num} />} icon="💊" />
+        <Stat label="Total Units" value={<CountUp end={data.reduce((s, p) => s + p.stock, 0)} formatter={num} />} icon="📦" tone="green" />
+        <Stat label="Stock Value (cost)" value={<CountUp end={totalValue} formatter={inr} />} icon="💰" tone="brand" />
       </div>
 
       <Toolbar>
